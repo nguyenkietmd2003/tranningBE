@@ -2,18 +2,19 @@ import mongoose from "mongoose";
 
 const datasetSchema = new mongoose.Schema(
   {
-    filename: {
+    name: {
       type: String,
       required: true,
     },
-    filepath: {
-      type: String,
+    fileId: {
+      type: String, // Ví dụ ID từ Dropbox hoặc hệ thống của bạn
       required: true,
+      unique: true,
     },
-    filetype: {
-      type: String,
-      required: true,
-    }
+    isFinetuned: {
+      type: Boolean,
+      default: false, // false: chưa fine-tune | true: đã fine-tune
+    },
   },
   {
     timestamps: false,
@@ -21,5 +22,4 @@ const datasetSchema = new mongoose.Schema(
 );
 
 const Dataset = mongoose.model("Dataset", datasetSchema);
-
 export default Dataset;
