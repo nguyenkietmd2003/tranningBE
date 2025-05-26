@@ -12,6 +12,9 @@ const qaPairSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
+       questionVector: {
+      type: [Number]
+    },
   },
   {
     timestamps: false,

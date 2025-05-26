@@ -4,8 +4,9 @@ import fetch from 'node-fetch';
 import PdfParse from 'pdf-parse';
 import Dataset from '../model/dataset.model.js';
 import QAPair from '../model/qapair.model.js';
+import axios from 'axios';
 // Khởi tạo Dropbox
-const url = 'sl.u.AFtiPXeTLmfr1WvwDQePZzvATevpxcIKlt1X9KdVk8na8DaIgS6FWncLD1bDflWLjsxndpM_NY8BSdd75TgqrR5Lu9tOwCdRgnkweP_KIFbjqO75vAnXREcf1VF5MIUUAduJgYh25xPJu9MD9e6J-aPDl9VMlJH4rXmimguOiMN_ELH2-1j4214W6fdxRXokghW3pdDI2GFOY0AQNRZsyaK_AeRvAF3Apa9FqpWuPRP0I8KQBvJfXznLBjqSfTTZ_D8311BclKLcV-5R7qZ_5gw8EnHqcbYPHNdpqAxSgDk3Z1y2F4N0wh5sEBX0CiPiQBaknQ8Opf_66rBFutTzutv3ibu0SF8BOP44p2Cmbn4vh-gOMvpcUhjPeRnExuWWxnRUZ68VjEYOp8u2IPavVK1W1zcTxSkokrLSa7j0lxnQ-aGB7BEZ4rJti4rlzOwkb48EuHuClT2G5oFmH9LIA3HTJzP1iA70FdKI7gqJdqPrymye9gFeCTfKGXjjXyXx5h4s1zZo_gamycL8MdjdbGqK-0KigEQFouBXCfsOjtcclLKG62_hlkbwjMxA-lHXhjU66RpO1YNhY7d4RXXTJVQvIxALkVCwWLFHW4mdrN1P2M9Yw2lYmakeAJYhKRVd3psV3qxis4fB25Vlu7s4R4P3t-mw0GdPcdIwrjhgmiFP3QOSrKjLn5I5I1fGzoB6ErNu7Gcijm5cRZqWKBFbyuolGzGQebRWdXtN6QGnqWGlpYXutgmOeAdJq1blpJXWKiKaxlFv0vtYVunZQ7Bk2ZymiRw-OFUqV6iMluxN1PsKJb2O4ZZ3zdxMEOY2qXUC-EG1lMV92p48rarkAePZHSuzxKemMimnzlwX0Wr98AmyniX99jVH_pS55WmaKXOSsRRZeVWDYydLGmJ0nlGUMypKjBQC_j__1515wUF9bvHZ8RR7Oc3iRs-Ghmw3I__EECqQNgXBqQUzlbMf48Dd641b3O6eprl-zJ4UzZQyxwBHfqNaOZ5kbz_gzTW4KoXHIW2RhFR7zwTHFR3CF1ZpACq8zFj9inXscTVJvX4pGTj9_OLjfVnsHYeCfbHauTXAPVGgD6-hqF6DtV61Rhf1qu_tDFAjvbJftI93tjE7qVfA-5BOgFxL4kxjuDz_n0q7dVz6pOS5_XGlH-fmb1fpHU0IlIQvHNxs8X9SeholLkOSmPiOhx5A0x3lb5Iq-FHhWv8ezOOqn7qi2C_097lZ0iXIX7KxRsU0VTfDd4vmBxgQeFcaRYbrCrEYWtlvN_4BbhwpUpRYRcvLVkGDdWPzUqPWCnuWMn0Eb0T3aUwvNM86bU4a6a6jJ2IPh5AcZuVSbAxd1MuloHnt9_ibf0XkC-3a4S9Jd6WVB056LaR7n8qMq0_SDregp6UJh2L0wCyf4zKUUlRNSPNBXXDo_HLCRhuS27MXpfF4FESEwsXfs3bBFA'
+const url = 'sl.u.AFvirmv0hhflL5lwK0HdbRbPBOwaRl6l2hvvh4bG_-Hl2tY6nzmhy8-03WZvewn7z5kgLKiiqUWpS06N3WMU7Wv6KtalL-4Di5ncpzztLr8sp_Q8DsB1e09Fyd6TIimzgCYbdWMw1rlp4ZiWQtlAjde_ZIfGrpg1O63aVwL-ETsu51p-kq1j7iVQRRezlTj8v_RMgG4VZNQ9_6-tDwLw22WQS13TKi7GPe_hPLMV0UrwNwYZ5leSdkcKba6zKNkh5a6zkWA9kLYZDYR0Webp1IAHrMr1gm4g1Q3nAgrLgRlQXKaxeY3_pm6XYV743j6r08mYQi39PAKWjbcgN__MZtOGn8X7MZBUBt7afh-DEVPEQatUk3TlFefz5lwf0Sd-nFzSOLQ-KKpOLQ-rZJ_qJqiC_L14-bj3QYNFXpZeid6mmhHsKLeREVFu9mHoH0zEDXniqCi1melrALb_GWMj1kNJoBxuEyM6Ls_8WjmGjL1OnKMqUOSCdNX_2EZTrgMc2oy1sFCJ0IZVzPJ-0vyNzEZit1DsDkY0UqCflSO9q-1MrFzgaBmxxPJNBvixXsb2w8WbEeDQSKLV5NrET3qm4PQbZU9qL5eJH0mGRM5QXjt4npMbeiVnUx-gTtqHuU3AVr-TwmR1SZQk6hd9ny1Dynwmn3Zemwe9tZ2E8bhjAxVVZaQFyEE5SlpWKDr0I2EQOtd1TEIWRXixH5F8O_2--AW1QadPS7SNSqcKzDo35NlVme3M6oW1rinZtZFlG4Za2f-YlUzp655WYxhFuyogpac7TxbchycFgsrZH6dfehwNGy3epELBz3h-YmBBsi5Li6SZamU7T3Va4mDj4zPljq0fSvczDv9sXMUZSm1PKzN8NZgYTXJETSY72Mc_ENHBXb9I8oUOlFxckLWxam5RR9O1HwL9QeWDR_-gVuj7Je2_MAphhnmaW8oBGzr3_Kn349BKLH_hLjyFph2tHxobYPDHW7PlFlIYBvbTg5zRY5wcxadShIMeqYjhP8wCpTfP034OxnMvN13OIeHitME6gPXHfUs8xFDfJLBTOc74p4KiBTq_pLOi9pb9ygm4nPDBjaCor0linf5YiPGJ5om24CXVIwmocBqgMny81BB-c6Pug58QjFUcZFmd9x8lO7KWsGMu0nqrDmS0Ogs7hDLhoZOMy7jgyhzDF8RmhmRCaCtCyLsYNJzkc0DxY05EQeTi8xPl3OV-W9afpaE4tP3NOgol__X9MkcOV5H-FENvNwcwf5VHxw7bD2dq4OWakbUasLqQhA9UYFRC-vTI-wbc2SZIrywOzYh_209sBxgq1CIBXIlA5GDqmUeQR5rKAZJGVvWjyzIUZFuE32G1MBNPnPWSAIKFpOtRLKuUq_bghXb_I4uRMVz8DcJkU9X7tS3_hT9DPMfw7xk2SYa4Av4-JBpNdAcFAzB-EQX9KoBasa3lOg'
 const dbx = new Dropbox({ accessToken: url, fetch });
 
 export const uploadFile = async (req, res) => {
@@ -170,43 +171,6 @@ export const analyzePdfById = async (req, res) => {
   try {
     const { id } = req.params;
 
-    // B1: Lấy danh sách file để tìm path theo id
-    let response = await dbx.filesListFolder({ path: '', recursive: true });
-    let allFiles = response.result.entries;
-
-    while (response.result.has_more) {
-      response = await dbx.filesListFolderContinue({ cursor: response.result.cursor });
-      allFiles.push(...response.result.entries);
-    }
-
-    const fileMeta = allFiles.find(file => file.id === id);
-    if (!fileMeta) {
-      return res.status(404).json({ message: 'File not found' });
-    }
-
-    // B2: Tải file về dưới dạng buffer
-    const downloadRes = await dbx.filesDownload({ path: fileMeta.path_lower });
-    const buffer = downloadRes.result.fileBinary;
-
-    // B3: Phân tích (ví dụ đọc PDF)
-    const data = await PdfParse(buffer);
-
-    res.json({
-      name: fileMeta.name,
-      content: data.text, // Hoặc data.numpages, info, metadata, etc.
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
-  }
-};
-
-
-
-export const analyzePdfById1 = async (req, res) => {
-  try {
-    const { id } = req.params;
-
     // B1: Lấy danh sách file
     let response = await dbx.filesListFolder({ path: '', recursive: true });
     let allFiles = response.result.entries;
@@ -231,6 +195,7 @@ export const analyzePdfById1 = async (req, res) => {
 
     // B4: Chuyển thành messages
     const messages = convertToMessages(rawText);
+    
         const qaDocs = messages.map(convo => {
       const userMsg = convo.messages.find(m => m.role === 'user');
       const assistantMsg = convo.messages.find(m => m.role === 'assistant');
@@ -240,9 +205,10 @@ export const analyzePdfById1 = async (req, res) => {
       };
     }).filter(q => q.question && q.answer); // Lọc dữ liệu rỗng
 
-    if (qaDocs.length > 0) {
-      await QAPair.insertMany(qaDocs);
-    }
+    // if (qaDocs.length > 0) {
+    //   await QAPair.insertMany(qaDocs);
+    // }
+     
 
     res.json({
       name: fileMeta.name,
@@ -254,8 +220,128 @@ export const analyzePdfById1 = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+
+
+  export const analyzePdfById1 = async (req, res) => {
+    try {
+      const { id } = req.params;
+
+      // B1: Lấy danh sách file
+      let response = await dbx.filesListFolder({ path: '', recursive: true });
+      let allFiles = response.result.entries;
+
+      while (response.result.has_more) {
+        response = await dbx.filesListFolderContinue({ cursor: response.result.cursor });
+        allFiles.push(...response.result.entries);
+      }
+
+      const fileMeta = allFiles.find(file => file.id === id);
+      if (!fileMeta) {
+        return res.status(404).json({ message: 'File not found' });
+      }
+
+      // B2: Tải file
+      const downloadRes = await dbx.filesDownload({ path: fileMeta.path_lower });
+      const buffer = downloadRes.result.fileBinary;
+
+      // B3: Phân tích PDF
+      const data = await PdfParse(buffer);
+      const rawText = data.text;
+
+      // B4: Chuyển thành messages
+      // const messages = convertToMessages(rawText);
+      //     const qaDocs = messages.map(convo => {
+      //   const userMsg = convo.messages.find(m => m.role === 'user');
+      //   const assistantMsg = convo.messages.find(m => m.role === 'assistant');
+      //   return {
+      //     question: userMsg?.content || '',
+      //     answer: assistantMsg?.content || ''
+      //   };
+      // }).filter(q => q.question && q.answer); // Lọc dữ liệu rỗng
+
+      // if (qaDocs.length > 0) {
+      //   await QAPair.insertMany(qaDocs);
+      // }
+      const messages = convertToMessages(rawText);
+  let qaDocs = messages.map(convo => {
+    const userMsg = convo.messages.find(m => m.role === 'user');
+    const assistantMsg = convo.messages.find(m => m.role === 'assistant');
+    return {
+      question: userMsg?.content || '',
+      answer: assistantMsg?.content || ''
+    };
+  }).filter(q => q.question && q.answer); // Lọc ra cặp hợp lệ
+
+  // Gửi request lấy vector và thêm vào mỗi QA
+  if (qaDocs.length > 0) {
+    for (let i = 0; i < qaDocs.length; i++) {
+      try {
+        const res = await axios.post('http://localhost:5000/embed', {
+          question: qaDocs[i].question
+        });
+      qaDocs[i].questionVector = res.data.embedding; // vector từ API trả về
+      } catch (err) {
+        console.error(`Lỗi khi gọi API cho câu hỏi: ${qaDocs[i].question}`);
+        console.error(err.message);
+        // Bạn có thể bỏ hoặc continue nếu cần
+        qaDocs[i].questionVector = [];
+      }
+    }
+
+    // Lưu tất cả vào DB
+    await QAPair.insertMany(qaDocs);
+
+  }
+  const finetune = await axios.post('http://localhost:5000/fine-tune', {
+    messages:messages,// message
+    "num_train_epochs": 3
+  })
+  console.log(finetune)
+
+      res.json({
+        name: fileMeta.name,
+        content: rawText,
+        messages: messages,
+        qaPairs: qaDocs 
+      });
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+// const convertToMessages = (rawText) => {
+//   const normalizedText = rawText.replace(/\r\n|\r/g, '\n'); // Chuẩn hoá line breaks
+//   const lines = normalizedText.split('\n').map(line => line.trim()).filter(line => line !== '');
+
+//   const conversations = [];
+//   let i = 0;
+
+//   while (i < lines.length) {
+//     const instructionLine = lines[i];
+//     const outputLine = lines[i + 1] || '';
+
+//     if (/^instruction:/i.test(instructionLine) && /^output:/i.test(outputLine)) {
+//       const userContent = instructionLine.replace(/^instruction:/i, '').trim();
+//       const assistantContent = outputLine.replace(/^output:/i, '').trim();
+
+//       conversations.push({
+//         messages: [
+//           { role: 'user', content: userContent },
+//           { role: 'assistant', content: assistantContent }
+//         ]
+//       });
+
+//       i += 2; // Nhảy qua 2 dòng đã xử lý
+//     } else {
+//       i += 1; // Nếu không khớp, chuyển sang dòng kế tiếp
+//     }
+//   }
+  
+
+//   return conversations;
+// };
 const convertToMessages = (rawText) => {
-  const normalizedText = rawText.replace(/\r\n|\r/g, '\n'); // Chuẩn hoá line breaks
+  const normalizedText = rawText.replace(/\r\n|\r/g, '\n');
   const lines = normalizedText.split('\n').map(line => line.trim()).filter(line => line !== '');
 
   const conversations = [];
@@ -263,28 +349,42 @@ const convertToMessages = (rawText) => {
 
   while (i < lines.length) {
     const instructionLine = lines[i];
-    const outputLine = lines[i + 1] || '';
 
-    if (/^instruction:/i.test(instructionLine) && /^output:/i.test(outputLine)) {
+    if (/^instruction:/i.test(instructionLine)) {
       const userContent = instructionLine.replace(/^instruction:/i, '').trim();
-      const assistantContent = outputLine.replace(/^output:/i, '').trim();
+      i++;
 
-      conversations.push({
-        messages: [
-          { role: 'user', content: userContent },
-          { role: 'assistant', content: assistantContent }
-        ]
-      });
+      let assistantContent = '';
 
-      i += 2; // Nhảy qua 2 dòng đã xử lý
+      if (i < lines.length && /^output:/i.test(lines[i])) {
+        assistantContent = lines[i].replace(/^output:/i, '').trim();
+        i++;
+
+        // Gom tất cả các dòng tiếp theo không bắt đầu bằng instruction/output
+        while (i < lines.length && !/^instruction:/i.test(lines[i])) {
+          assistantContent += '\n' + lines[i];
+          i++;
+        }
+
+        conversations.push({
+          messages: [
+            { role: 'user', content: userContent },
+            { role: 'assistant', content: assistantContent }
+          ]
+        });
+      } else {
+        // Không có output => bỏ qua
+        i++;
+      }
     } else {
-      i += 1; // Nếu không khớp, chuyển sang dòng kế tiếp
+      i++;
     }
   }
-  
 
   return conversations;
 };
+
+
 
 
 
@@ -308,21 +408,89 @@ export const getListFile = async (req, res) => {
 
 
 
-export const chatAI =async (req, res) => {
+function cosineSimilarity(a, b) {
+  if (!Array.isArray(a) || !Array.isArray(b) || a.length !== b.length) return 0;
+  const dot = a.reduce((sum, val, i) => sum + val * b[i], 0);
+  const magA = Math.sqrt(a.reduce((sum, val) => sum + val * val, 0));
+  const magB = Math.sqrt(b.reduce((sum, val) => sum + val * val, 0));
+  return magA && magB ? dot / (magA * magB) : 0;
+}
+
+function findBestMatch(userVector, dataset, threshold = 0.1) {
+  let bestItem = null;
+  let bestScore = -1;
+
+  for (const item of dataset) {
+    const score = cosineSimilarity(userVector, item.questionVector);
+    if (score > bestScore) {
+      bestScore = score;
+      bestItem = item;
+    }
+  }
+
+  if (bestScore < threshold) {
+    return null; // không đủ giống
+  }
+
+  return {
+    bestScore,
+    bestItem
+  };
+}
+
+
+export const chatAI = async (req, res) => {
   const { question } = req.body;
+  console.log(question,'question');
 
   try {
-      if (!question) {
+    if (!question) {
       return res.status(400).json({
         status: 400,
         success: false,
         message: 'Vui lòng nhập câu hỏi'
-      }); 
+      });
     }
-    
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: error.message });
-    
-  }
+
+const response = await axios.post('http://localhost:5000/embed', { question });
+const userVector = response.data.embedding;
+
+const dataset = await QAPair.find();
+const result = findBestMatch(userVector, dataset, 0.1); // ngưỡng tương đồng
+
+if (!result) {
+  return res.status(200).json({
+    status: 200,
+    success: true,
+    message: 'Không tìm thấy câu trả lời phù hợp',
+    data: null
+  });
 }
+const answerAI = await axios.post('http://localhost:5000/ask', {
+  question: result.bestItem.question,
+  context: result.bestItem.answer
+});
+console.log(response, 'response');
+console.log(answerAI, 'answerAI');
+
+return res.status(200).json({
+  status: 200,
+  success: true,
+  message: 'Tìm thấy câu trả lời phù hợp nhất',
+  data: {
+    question: result.bestItem.question,
+    answer: result.bestItem.answer,
+    similarity: result.bestScore,
+    answerAI: answerAI.data.answer
+  }
+});
+
+  } catch (error) {
+    res.status(500).json({
+      status: 500,
+      success: false,
+      message: 'Lỗi máy chủ',
+      error: error.message
+    });
+  }
+};
